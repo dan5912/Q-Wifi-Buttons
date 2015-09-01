@@ -1,34 +1,66 @@
-wifi.setmode(wifi.STATION)
-wifi.sta.config("11FX02061911","f37792acaf")
-print(wifi.sta.getip())
+wifi.setmode(wifi.SOFTAP);
+
+cfg={}
+cfg.ssid="qcorp_nodes"
+cfg.pwd="password"
+
+wifi.ap.config(cfg)
 button_in = 3
+
 counter = {0,0,0,0,0,0};
 button_pressed = {0,0,0,0,0,0};
+
 gpio.mode(button_in, gpio.INPUT)
+
 srv=net.createServer(net.TCP)
+print("Running");
 
 srv:listen(80,function(conn)
+
     conn:on("receive", function(client,request)
+
         local buf = "";
-        
         local _, _, method, path, vars = string.find(request, "([A-Z]+) (.+)?(.+) HTTP");
+
         if(method == nil)then
+
             _, _, method, path = string.find(request, "([A-Z]+) (.+) HTTP");
+
         end
+
         local _GET = {}
+
         if (vars ~= nil)then
+
             for k, v in string.gmatch(vars, "(%w+)=(%w+)&*") do
                 _GET[k] = v
             end
         end
-        buf = buf.."<h1>Counters 1-6: "..counter[1].." "..counter[2].." "..counter[3].." "..counter[4].." "..counter[5].." "..counter[6].." ".."</h1>"
-        buf = buf.."<script type='text/javascript'>setTimeout(function () { location.reload(true); }, 5000);</script>"
 
-     
-        
+        buf = buf.."<head><script type='text/javascript'>setTimeout(function () { location.reload(true); }, 200);</script></head>"
+        buf = buf.."<body><h1>Counters 1-6: "..counter[1].." "..counter[2].." "..counter[3].." "..counter[4].." "..counter[5].." "..counter[6].." ".."</h1></body>"
+
         client:send(buf);
         client:close();
         collectgarbage();
+        if _GET.c1 then
+          counter[1] = _GET.c1;
+        end
+        if _GET.c2 then
+          counter[2] = _GET.c2;
+        end
+        if _GET.c3 then
+          counter[3] = _GET.c3;
+        end
+        if _GET.c4 then
+          counter[4] = _GET.c4;
+        end
+        if _GET.c5 then
+          counter[5] = _GET.c5;
+        end
+        if _GET.c6 then
+          counter[6] = _GET.c6;
+        end
     end)
 end)
 
@@ -45,3 +77,4 @@ function get_button()
 end
 
 tmr.alarm(1,50,1,get_button)
+

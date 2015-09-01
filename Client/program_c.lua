@@ -1,5 +1,5 @@
 wifi.setmode(wifi.STATION);
-wifi.sta.config("qcorp_nodes","password");
+wifi.sta.config("Net01","password");
 print(wifi.sta.getip());
 button_in = 3
 counter = 0;
