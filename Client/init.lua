@@ -3,7 +3,7 @@ print('Waiting to begin...')
 function run()
    print('starting')
    tmr.stop(0);
-   dofile('program.lua')
+   dofile('program_c.lua')
    end
 
 

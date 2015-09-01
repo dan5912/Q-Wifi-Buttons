@@ -8,17 +8,17 @@ wifi.ap.config(cfg)
 button_in = 3
 
 counter = {0,0,0,0,0,0};
-button_pressed = {0,0,0,0,0,0};
+button_pressed = 1;
 
 gpio.mode(button_in, gpio.INPUT)
 
 srv=net.createServer(net.TCP)
 print("Running");
+print(wifi.ap.getip());
 
 srv:listen(80,function(conn)
 
     conn:on("receive", function(client,request)
-
         local buf = "";
         local _, _, method, path, vars = string.find(request, "([A-Z]+) (.+)?(.+) HTTP");
 
@@ -36,13 +36,12 @@ srv:listen(80,function(conn)
                 _GET[k] = v
             end
         end
-
-        buf = buf.."<head><script type='text/javascript'>setTimeout(function () { location.reload(true); }, 200);</script></head>"
-        buf = buf.."<body><h1>Counters 1-6: "..counter[1].." "..counter[2].." "..counter[3].." "..counter[4].." "..counter[5].." "..counter[6].." ".."</h1></body>"
+        
+        buf = buf..counter[1].." "..counter[2].." "..counter[3].." "..counter[4].." "..counter[5].." "..counter[6]
 
         client:send(buf);
         client:close();
-        collectgarbage();
+
         if _GET.c1 then
           counter[1] = _GET.c1;
         end
@@ -61,18 +60,25 @@ srv:listen(80,function(conn)
         if _GET.c6 then
           counter[6] = _GET.c6;
         end
+
+        
+        collectgarbage();
+      
     end)
 end)
 
+
+
+
 function get_button()
      if(gpio.read(3)==1) then
-         if (button_pressed[1] == 0) then
+         if (button_pressed == 0) then
                counter[1] = counter[1] + 1;
-               button_pressed[1] = 1;
+               button_pressed = 1;
          end
      end
      if (gpio.read(3) == 0) then
-          button_pressed[1] = 0;
+          button_pressed = 0;
      end
 end
 
