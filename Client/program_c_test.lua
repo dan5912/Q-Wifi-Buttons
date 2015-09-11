@@ -1,20 +1,19 @@
-button_number = "2";
-wifi.sta.disconnect();
+button_number = "3";
 
 
-wifi.sleeptype(wifi.SLEEP_NONE);
-wifi.sta.autoconnect(1);
+
+
 button_in = 4;
 wifi.setmode(wifi.STATION);
 wifi.sta.config("Net01","password")
-
-print(wifi.sta.status());
-tmr.delay(2000000);
-while (wifi.sta.status() ~=5 ) do  
-wifi.sleeptype(wifi.MODEM_SLEEP)      
-      node.restart();
+wifi.sta.autoconnect(1);
+exit = 0;
+tmr.delay(1000000);
+wifi.sta.connect()
+tmr.delay(1000000);
+if( not wifi.sta.getip()) then
+     node.restart();
 end
-
 print(wifi.sta.getip());
 
 
@@ -32,7 +31,7 @@ function postCounter()
  
 
     
-    connout:on("connection", function()  connout:send("GET /?c"..button_number.."="..counter.." HTTP/1.1\r\n")  end)
+    connout:on("connection", function() print("posted") connout:send("GET /?c"..button_number.."="..counter.." HTTP/1.1\r\n")  end)
     connout:connect(80,'192.168.4.1');
 
 
@@ -49,10 +48,10 @@ local function get_button()
          if (button_pressed == 0) then
                counter = counter + 1;
                button_pressed = 1;
-               wifi.sleeptype(wifi.NONE_SLEEP)
+               print(wifi.sleeptype(wifi.NONE_SLEEP))
                postCounter();
-               wifi.sleeptype(wifi.MODEM_SLEEP)
-               tmr.alarm(2,200,0,resetButton);
+               print(wifi.sleeptype(wifi.MODEM_SLEEP))
+               tmr.alarm(2,300,0,resetButton);
                
          end
      end
@@ -66,10 +65,10 @@ function resetButton()
           button_pressed = 0;
           print("reset button")
      else
-          tmr.alarm(2,100,0,resetButton);
+          tmr.alarm(2,300,0,resetButton);
      end
 
 end
-tmr.alarm(1,5,1,get_button)
+tmr.alarm(1,10,1,get_button)
 
 

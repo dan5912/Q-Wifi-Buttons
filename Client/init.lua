@@ -1,10 +1,21 @@
+abort = 0;
 print('Waiting to begin...')
 
+
 function run()
-   print('starting')
+
+   
    tmr.stop(0);
-   dofile('program_c.lua')
+
+   
+   if (abort == 0) then
+     print('Starting')
+     dofile('program_c.lua')
+     
+   else
+     print("Aborted");
    end
+end
 
 
-   tmr.alarm(0,5000,0,run)
+   tmr.alarm(0,2000,0,run)

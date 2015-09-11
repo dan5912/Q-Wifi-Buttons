@@ -1,16 +1,17 @@
 wifi.setmode(wifi.SOFTAP);
 
 cfg={}
-cfg.ssid="qcorp_nodes"
+cfg.ssid="Net01"
 cfg.pwd="password"
+cfg.max = 7
 
 wifi.ap.config(cfg)
-button_in = 3
+button_in = 4
 
 counter = {0,0,0,0,0,0};
-button_pressed = 1;
+button_pressed = 0;
 
-gpio.mode(button_in, gpio.INPUT)
+gpio.mode(button_in, gpio.INPUT,gpio.PULLUP)
 
 srv=net.createServer(net.TCP)
 print("Running");
@@ -71,16 +72,25 @@ end)
 
 
 function get_button()
-     if(gpio.read(3)==1) then
+     if(gpio.read(button_in)==0) then
          if (button_pressed == 0) then
                counter[1] = counter[1] + 1;
                button_pressed = 1;
+               print("Pressed");
+               tmr.alarm(2,100,0,resetButton);
          end
-     end
-     if (gpio.read(3) == 0) then
-          button_pressed = 0;
      end
 end
 
-tmr.alarm(1,50,1,get_button)
+function resetButton()
+     if(gpio.read(button_in) == 1) then
+          button_pressed = 0;
+     else
+          tmr.alarm(2,100,0,resetButton);
+     end
+     
+end
+
+
+tmr.alarm(1,10,1,get_button)
 
