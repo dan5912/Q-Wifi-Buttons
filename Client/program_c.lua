@@ -1,15 +1,6 @@
-button_number = "2";
-wifi.sta.disconnect();
 
-
-wifi.sleeptype(wifi.SLEEP_NONE);
-wifi.sta.autoconnect(1);
 button_in = 4;
-wifi.setmode(wifi.STATION);
-wifi.sta.config("Net01","password")
 
-print(wifi.sta.status());
-tmr.delay(2000000);
 while (wifi.sta.status() ~=5 ) do  
 wifi.sleeptype(wifi.MODEM_SLEEP)      
       node.restart();

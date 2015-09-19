@@ -1,8 +1,3 @@
-
-
-
-
-
 button_in = 4
 
 counter = {0,0,0,0,0,0};
@@ -12,7 +7,7 @@ gpio.mode(button_in, gpio.INPUT,gpio.PULLUP)
 
 srv=net.createServer(net.TCP)
 print("Running");
-print(wifi.ap.getip());
+
 
 srv:listen(80,function(conn)
 
@@ -35,12 +30,11 @@ srv:listen(80,function(conn)
             end
         end
         
-        buf = buf..counter[1].." "..counter[2].." "..counter[3].." "..counter[4].." "..counter[5].." "..counter[6]
-
-        client:send(buf);
         client:close();
 
-
+        if _GET.c1 then
+          counter[1] = _GET.c1;
+        end
         if _GET.c2 then
           counter[2] = _GET.c2;
         end

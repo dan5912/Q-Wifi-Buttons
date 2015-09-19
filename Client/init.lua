@@ -1,15 +1,22 @@
-abort = 0;
-print('Waiting to begin...')
-cfg={}
-cfg.ssid="Net02"
-cfg.pwd="password"
-wifi.ap.config(cfg)
+button_number = 6
 
-wifi.sta.config("Net01","password")
-wifi.sta.setip({ip="192.168.4.3",netmask="255.255.255.0",gateway="192.168.4.1"})
+
+
+
+
+
+
+abort = 0;
+
+print('Waiting to begin...')
+
+
+wifi.sta.config("Net02","password")
+wifi.sta.setip({ip="192.168.4."..button_number,netmask="255.255.255.0",gateway="192.168.4.1"})
 
 wifi.sta.autoconnect(1);
-wifi.setmode(wifi.STATIONAP);
+wifi.setmode(wifi.STATION);
+
 function run()
 
    
@@ -17,9 +24,9 @@ function run()
 
    
    if (abort == 0) then
-     print('Starting')
-     dofile('program_c_test.lua')
-     
+     print('starting')
+      tmr.stop(0);
+     dofile('program_c.lua')
    else
      print("Aborted");
    end
