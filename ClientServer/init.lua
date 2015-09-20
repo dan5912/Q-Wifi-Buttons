@@ -29,7 +29,7 @@ function run()
    if (abort == 0) then
      print('starting')
       tmr.stop(0);
-     dofile('client_server.lua')
+     dofile('client_server.lc')
    else
      print("Aborted");
    end

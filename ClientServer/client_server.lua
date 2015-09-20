@@ -4,7 +4,9 @@ counter = {0,0,0,0,0,0};
 button_pressed = 0;
 
 gpio.mode(button_in, gpio.INPUT,gpio.PULLUP)
-
+if (wifi.sta.status() ~= 5) then
+     node.restart()
+end
 srv=net.createServer(net.TCP)
 print("Running");
 print("Station: ".. wifi.sta.getip())
@@ -14,6 +16,7 @@ print("Status: ".. wifi.sta.status())
 srv:listen(80,function(conn)
 
     conn:on("receive", function(client,request)
+        if ((client ~= nil) and (request ~= nil)) then
         local buf = "";
         local _, _, method, path, vars = string.find(request, "([A-Z]+) (.+)?(.+) HTTP");
 
@@ -51,7 +54,7 @@ srv:listen(80,function(conn)
         
         collectgarbage();
         postCounter();
-        print(counter[3]);
+        end
     end)
 end)
 
@@ -85,9 +88,8 @@ tmr.alarm(1,20,1,get_button)
 
 
 function postCounter()
-    connout = nil;
+
     connout = net.createConnection(net.TCP, 0);
- 
     connout:on("connection", function()  connout:send("GET /?c2=" .. counter[2].."&c3="..counter[3].."&c4="..counter[4].."&c5="..counter[5].."&c6="..counter[6].." HTTP/1.1\r\n")   end)
     connout:connect(80,'192.168.5.1');
      

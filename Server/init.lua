@@ -18,7 +18,7 @@ function run()
      if abort == 0 then
           print('starting')
           tmr.stop(0);
-          dofile('program.lua')
+          dofile('program.lc')
      else
           print("Aborted")
      end

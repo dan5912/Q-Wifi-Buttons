@@ -18,6 +18,7 @@ counter = 0;
 button_pressed = 0;
 gpio.mode(button_in, gpio.INPUT,gpio.PULLUP);
 function postCounter()
+
     connout = nil;
     connout = net.createConnection(net.TCP, 0);
  

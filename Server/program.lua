@@ -10,13 +10,14 @@ button_pressed = 0;
 
 gpio.mode(button_in, gpio.INPUT,gpio.PULLUP)
 
-srv=net.createServer(net.TCP)
+srv=net.createServer(net.TCP,1)
 print("Running");
 print(wifi.ap.getip());
 
 srv:listen(80,function(conn)
 
     conn:on("receive", function(client,request)
+        if ((client ~= nil) and (request ~= nil)) then
         local buf = "";
         local _, _, method, path, vars = string.find(request, "([A-Z]+) (.+)?(.+) HTTP");
 
@@ -35,10 +36,8 @@ srv:listen(80,function(conn)
             end
         end
         
-        buf = buf..counter[1].." "..counter[2].." "..counter[3].." "..counter[4].." "..counter[5].." "..counter[6]
-
-        client:send(buf);
-        client:close();
+        
+        
 
 
         if _GET.c2 then
@@ -58,8 +57,17 @@ srv:listen(80,function(conn)
         end
 
         
+
+        buf = buf..counter[1].." "..counter[2].." "..counter[3].." "..counter[4].." "..counter[5].." "..counter[6]
+        cip,cport = client:getpeer()
+        if (cip ~= "192.168.5.12") then
+               client:send(buf);
+        end
+        
         collectgarbage();
-      
+        client:close()
+        end
+        
     end)
 end)
 
@@ -87,5 +95,5 @@ function resetButton()
 end
 
 
-tmr.alarm(1,10,1,get_button)
+tmr.alarm(1,20,1,get_button)
 
